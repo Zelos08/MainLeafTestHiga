@@ -226,6 +226,7 @@ public class PlayerController : MonoBehaviour
             Ray ray = new Ray(transform.position, Vector3.down);
             b_onGround = Physics.Raycast(ray, out hit, f_distanceToCheckGround);
         }
+        Debug.Log(b_onGround);
     }
     //Animator Functions
     private void SetAnimatorVariables()
