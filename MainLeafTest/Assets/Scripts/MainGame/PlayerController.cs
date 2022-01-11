@@ -157,8 +157,11 @@ public class PlayerController : MonoBehaviour
 
     private void crouchDown()
     {
-        _boxCollider.size = v3_BoxColliderCrouchSize;
-        _boxCollider.center = v3_BoxColliderCrouchCenter;
+        if (b_onGround)
+        {
+            _boxCollider.size = v3_BoxColliderCrouchSize;
+            _boxCollider.center = v3_BoxColliderCrouchCenter;
+        }
     }
 
     private void crouchUp()
@@ -221,10 +224,12 @@ public class PlayerController : MonoBehaviour
 
     private void CheckIfIsOnGround()
     {
-        if (!b_onGround)
+        //Use the "Jump" to check if player jumped
+        if (!b_onGround && _animator.GetFloat("Jump") > -8)
         {
             Ray ray = new Ray(transform.position, Vector3.down);
             b_onGround = Physics.Raycast(ray, out hit, f_distanceToCheckGround);
+            Debug.Log("veio ak");
         }
         Debug.Log(b_onGround);
     }
