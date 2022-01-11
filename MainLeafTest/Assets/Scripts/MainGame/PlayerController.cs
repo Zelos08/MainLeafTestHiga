@@ -229,9 +229,7 @@ public class PlayerController : MonoBehaviour
         {
             Ray ray = new Ray(transform.position, Vector3.down);
             b_onGround = Physics.Raycast(ray, out hit, f_distanceToCheckGround);
-            Debug.Log("veio ak");
         }
-        Debug.Log(b_onGround);
     }
     //Animator Functions
     private void SetAnimatorVariables()
@@ -254,5 +252,11 @@ public class PlayerController : MonoBehaviour
         {
             _animator.SetFloat("Jump", _animator.GetFloat("Jump") + Time.deltaTime * f_jumpAnimationVelocity);
         }
+    }
+
+    //Box push Functions
+    public void CanPushABox()
+    {
+        Debug.Log("push box");
     }
 }
