@@ -6,8 +6,9 @@ public class PlayerController : MonoBehaviour
 {
     private Animator _animator;
     private Rigidbody _rigidbody;
-
-
+    public UiController _uiController;
+    enum State { Normal, Pushing, Pause};
+    private State e_state;
     //Physics Variables
     public float f_deceleration = 2;
 
@@ -38,6 +39,12 @@ public class PlayerController : MonoBehaviour
     private Vector3 v3_BoxColliderNormalCenter;
     private Vector3 v3_BoxColliderCrouchSize;
     private Vector3 v3_BoxColliderCrouchCenter;
+
+    //Variable to push
+    private bool b_canPush;
+    private Vector3 v3_pushDirection;
+    private Rigidbody _PushObject;
+
     void Start()
     {
         //Get the Animator attached to the GameObject.
@@ -68,19 +75,49 @@ public class PlayerController : MonoBehaviour
             Debug.LogException(new UnityException("Add an boxCollider to the player."));
             return;
         }
+
+        e_state = State.Normal;
     }
 
     // Update is called once per frame
     void Update()
     {
-        NormalMovimentInput();      
+        switch (e_state)
+        {
+            case State.Normal:
+                NormalMovimentInput();
+                break;
+            case State.Pushing:
+                PushingInput();
+                break;
+            case State.Pause:
+                break;
+            default:
+                break;
+        }
+            
     }
 
 
     private void FixedUpdate()
     {
-        CaculatePhysics();
-        SetAnimatorVariables();
+
+        switch (e_state)
+        {
+            case State.Normal:
+                CaculatePhysics();
+                SetAnimatorVariables();
+                break;
+            case State.Pushing:
+                PushMoviment();
+                AnimatePushMovimente();
+                break;
+            case State.Pause:
+                break;
+            default:
+                break;
+        }
+        
     }
 
     //Moviment Functions
@@ -134,6 +171,69 @@ public class PlayerController : MonoBehaviour
         {
             crouchUp();
             _animator.SetBool("Crouch", false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+        {
+            if (b_canPush)
+            {
+                StartPush();
+            }
+        }
+    }
+
+    private void PushingInput()
+    {
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            v3_pushDirection = -transform.right;
+        }
+
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            v3_pushDirection = transform.forward;
+        }
+
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            v3_pushDirection = -transform.forward;
+        }
+
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            v3_pushDirection = transform.right;
+        }
+
+        if (Input.GetKeyUp(KeyCode.A))
+        {
+            if (v3_pushDirection == -transform.right)
+                v3_pushDirection = Vector3.zero;
+        }
+
+        if (Input.GetKeyUp(KeyCode.W))
+        {
+            if (v3_pushDirection == transform.forward)
+                v3_pushDirection = Vector3.zero;
+        }
+
+        if (Input.GetKeyUp(KeyCode.S))
+        {
+            if (v3_pushDirection == -transform.forward)
+                v3_pushDirection = Vector3.zero;
+        }
+
+        if (Input.GetKeyUp(KeyCode.D))
+        {
+            if (v3_pushDirection == transform.right)
+                v3_pushDirection = Vector3.zero;
+        }
+
+        if (Input.GetKeyUp(KeyCode.Mouse1))
+        {
+            if (b_canPush)
+            {
+                StopPush();
+            }
         }
     }
 
@@ -213,6 +313,12 @@ public class PlayerController : MonoBehaviour
         _rigidbody.MovePosition(transform.position + tempVect);
     }
 
+    private void resetVariables()
+    {
+        f_rotateVellocity = 0;
+        f_velocity = 0;
+    }
+
     private void CalculateJumpForce()
     {
         if (b_onGround)
@@ -255,8 +361,56 @@ public class PlayerController : MonoBehaviour
     }
 
     //Box push Functions
-    public void CanPushABox()
+    public void CanPushABox(bool valor, Rigidbody box = null)
     {
-        Debug.Log("push box");
+        b_canPush = valor;
+        _PushObject = box;
+        _uiController.ChangeAndShowTip("Use o botão esquerdo do mouse para agarrar");
+        if (!b_canPush)
+        {
+            StopPush();
+            _uiController.HideTip();
+        }
+    }
+
+    private void StartPush()
+    {
+        ChangeState(State.Pushing);
+        //set push Animation
+        _animator.SetBool("Crouch", true);
+        CorrectRotationToPush();
+    }
+
+    private void StopPush()
+    {
+        ChangeState(State.Normal);
+        _animator.SetBool("Crouch", false);
+        _PushObject = null;
+    }
+
+    private void CorrectRotationToPush()
+    {
+        transform.LookAt(_PushObject.transform);
+
+        float x = _rigidbody.rotation.x > 45? 90:0;
+        float z = _rigidbody.rotation.z > 45 ? 90 : 0;
+
+        _rigidbody.transform.eulerAngles = new Vector3(x, _rigidbody.transform.eulerAngles.y, z);
+    }
+    private void PushMoviment()
+    {
+        _rigidbody.MovePosition(transform.position + v3_pushDirection * Time.deltaTime);
+        _PushObject.MovePosition(_PushObject.position + v3_pushDirection * Time.deltaTime);
+    }
+
+    private void AnimatePushMovimente()
+    {
+        _animator.SetFloat("Forward", v3_pushDirection.magnitude);
+    }
+    //Controll Function
+    private void ChangeState(State newState)
+    {
+        e_state = newState;
+        resetVariables();
     }
 }
