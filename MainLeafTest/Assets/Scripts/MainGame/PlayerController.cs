@@ -6,7 +6,6 @@ public class PlayerController : MonoBehaviour
 {
     private Animator _animator;
     private Rigidbody _rigidbody;
-    public UiController _uiController;
     private int i_coins;
     enum State { Normal, Pushing, Pause};
     private State e_state;
@@ -77,47 +76,61 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        i_coins = PlayerPrefs.GetInt("Coins");
+        i_coins = PlayerPrefs.GetInt("coins");
+        ChangeCoins(0);
         e_state = State.Normal;
     }
 
     // Update is called once per frame
     void Update()
     {
-        switch (e_state)
+        if (!GameController.GetPaused())
         {
-            case State.Normal:
-                NormalMovimentInput();
-                break;
-            case State.Pushing:
-                PushingInput();
-                break;
-            case State.Pause:
-                break;
-            default:
-                break;
+            switch (e_state)
+            {
+                case State.Normal:
+                    NormalMovimentInput();
+                    break;
+                case State.Pushing:
+                    PushingInput();
+                    break;
+                case State.Pause:
+                    break;
+                default:
+                    break;
+            }
         }
-            
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            GameController.ChangePouse();
+        }
     }
 
 
     private void FixedUpdate()
     {
-
-        switch (e_state)
+        if (!GameController.GetPaused())
         {
-            case State.Normal:
-                CaculatePhysics();
-                SetAnimatorVariables();
-                break;
-            case State.Pushing:
-                PushMoviment();
-                AnimatePushMovimente();
-                break;
-            case State.Pause:
-                break;
-            default:
-                break;
+            switch (e_state)
+            {
+                case State.Normal:
+                    CaculatePhysics();
+                    SetAnimatorVariables();
+                    break;
+                case State.Pushing:
+                    PushMoviment();
+                    AnimatePushMovimente();
+                    break;
+                case State.Pause:
+                    break;
+                default:
+                    break;
+            }
+        }
+        else
+        {
+            _rigidbody.Sleep();
         }
         
     }
@@ -367,11 +380,11 @@ public class PlayerController : MonoBehaviour
     {
         b_canPush = valor;
         _PushObject = box;
-        _uiController.ChangeAndShowTip("Use o botão esquerdo do mouse para agarrar");
+        GameController.ChangeTip("Use o botão esquerdo do mouse para agarrar");
         if (!b_canPush)
         {
             StopPush();
-            _uiController.HideTip();
+            GameController.HideTip();
         }
     }
 
@@ -419,6 +432,7 @@ public class PlayerController : MonoBehaviour
     public void ChangeCoins(int valor)
     {
         i_coins += valor;
-        _uiController.ChangeCoins(i_coins);
+        GameController.ChangeCoins(i_coins);
+        PlayerPrefs.SetInt("coins", i_coins);
     }
 }
