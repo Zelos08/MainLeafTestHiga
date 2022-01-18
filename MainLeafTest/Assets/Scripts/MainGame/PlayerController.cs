@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     private Animator _animator;
     private Rigidbody _rigidbody;
     public UiController _uiController;
+    private int i_coins;
     enum State { Normal, Pushing, Pause};
     private State e_state;
     //Physics Variables
@@ -76,6 +77,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
+        i_coins = PlayerPrefs.GetInt("Coins");
         e_state = State.Normal;
     }
 
@@ -412,5 +414,11 @@ public class PlayerController : MonoBehaviour
     {
         e_state = newState;
         resetVariables();
+    }
+
+    public void ChangeCoins(int valor)
+    {
+        i_coins += valor;
+        _uiController.ChangeCoins(i_coins);
     }
 }

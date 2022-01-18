@@ -10,7 +10,7 @@ public class TriggerArea : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            SceneManager.LoadScene(newScene);
+            SceneManager.LoadScene(newScene, LoadSceneMode.Single);
             PlayerPrefs.SetInt("resolved", 1);
         }
     }
