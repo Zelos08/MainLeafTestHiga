@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7858217630154234381}
   - component: {fileID: 7858217630154234380}
   - component: {fileID: 7858217630154234383}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: GreenCoin
   m_TagString: Untagged
   m_Icon: {fileID: 0}

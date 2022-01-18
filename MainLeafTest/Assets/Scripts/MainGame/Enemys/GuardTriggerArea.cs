@@ -17,7 +17,9 @@ public class GuardTriggerArea : MonoBehaviour
             if (Physics.Raycast(ray, out hit, f_reach))
             {
                 if (hit.collider.CompareTag("Player"))
-                    Debug.Log("acho");
+                {
+                    GameController.CallCapturedMenu(true);
+                }
             }
         }
     }   

@@ -5,22 +5,35 @@ using UnityEngine;
 
 public class UiController : MonoBehaviour
 {
-    public Text Tip;
-    public Text CoinCounter;
+    public Text t_tip;
+    public Text t_coinCounter;
+    public GameObject _pauseMenu;
+    public GameObject _capturedMenu;
 
-    public void ChangeCoins(int valor)
+    public void ChangeCoins(int i_valor)
     {
-        CoinCounter.text = "x " + valor;
+        t_coinCounter.text = "x " + i_valor;
     }
 
-    public void ChangeAndShowTip(string tipText)
+    public void ChangeAndShowTip(string s_tipText)
     {
-        Tip.enabled = true;
-        Tip.text = tipText;
+        t_tip.enabled = true;
+        t_tip.text = s_tipText;
     }
 
     public void HideTip()
     {
-        Tip.enabled = false;
+        t_tip.enabled = false;
+    }
+
+    public void CallPauseMenu(bool b_valor)
+    {
+        _pauseMenu.active = b_valor;
+;
+    }
+
+    public void CallCapturedMenu(bool b_valor)
+    {
+        _capturedMenu.active = b_valor;       
     }
 }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 4575880371875167509}
   - component: {fileID: 6853480507301241899}
   - component: {fileID: 8155878934410931720}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: BlueCoin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
