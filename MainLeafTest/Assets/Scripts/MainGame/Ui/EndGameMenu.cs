@@ -5,6 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class EndGameMenu : MonoBehaviour
 {
+    private void Start()
+    {
+        Cursor.visible = true;
+    }
+
     public void QuitGame()
     {
         Application.Quit();
@@ -12,6 +17,7 @@ public class EndGameMenu : MonoBehaviour
 
     public void ResetGame()
     {
+        PlayerPrefs.DeleteAll();
         SceneManager.LoadScene("Map1", LoadSceneMode.Single);
     }
 }
