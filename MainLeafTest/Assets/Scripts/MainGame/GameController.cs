@@ -14,7 +14,7 @@ public class GameController : MonoBehaviour
         b_isPaused = false;
 
         Cursor.visible = b_isPaused;
-        
+        Cursor.lockState = (CursorLockMode.Locked);
         if (_instance == null)
         {
             DontDestroyOnLoad(gameObject);
@@ -38,10 +38,15 @@ public class GameController : MonoBehaviour
 
     public static void ChangePouse()
     {
-
+        
         b_isPaused = !b_isPaused;
         Cursor.visible = b_isPaused;
         _instance._uiController.CallPauseMenu(b_isPaused);
+
+        if(b_isPaused)
+            Cursor.lockState = (CursorLockMode.Confined);
+        else
+            Cursor.lockState = (CursorLockMode.Locked);
     }
 
     public static void LoadScene(string s_sceneName)
@@ -63,6 +68,7 @@ public class GameController : MonoBehaviour
         b_isPaused = false;
         _instance._uiController.CallPauseMenu(b_isPaused);
         _instance._uiController.CallCapturedMenu(false);
+        Cursor.lockState = (CursorLockMode.Locked);
         Cursor.visible = b_isPaused;
     }
     public static void QuitGame()
@@ -80,6 +86,16 @@ public class GameController : MonoBehaviour
         _instance._uiController.HideTip();
     }
 
+    public static void ChangeBlueTip(string s_tipText)
+    {
+        _instance._uiController.ChangeAndShowBlueTip(s_tipText);
+    }
+
+    public static void HideBlueTip()
+    {
+        _instance._uiController.HideBlueTip();
+    }
+
     public static void ChangeCoins(int i_valor)
     {
         _instance._uiController.ChangeCoins(i_valor);
@@ -88,6 +104,7 @@ public class GameController : MonoBehaviour
     public static void CallCapturedMenu(bool b_valor)
     {
         Cursor.visible = true;
+        Cursor.lockState = (CursorLockMode.Confined);
         _instance._uiController.CallCapturedMenu(b_valor);
     }
 }

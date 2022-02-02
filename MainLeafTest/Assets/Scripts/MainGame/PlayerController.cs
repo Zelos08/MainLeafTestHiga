@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     //Variable to push
     private bool b_canPush;
     private Vector3 v3_pushDirection;
-    private Rigidbody _PushObject;
+    private Rigidbody _pushObject;
 
     void Start()
     {
@@ -160,6 +160,11 @@ public class PlayerController : MonoBehaviour
             Accelerate(false);
         }
 
+        if (Input.GetKeyDown(KeyCode.S))
+        {
+            InstaRotate(180);
+        }
+
         if (Input.GetKeyDown(KeyCode.D))
         {
             SetRotateY(1);
@@ -188,7 +193,7 @@ public class PlayerController : MonoBehaviour
             _animator.SetBool("Crouch", false);
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse1))
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
             if (b_canPush)
             {
@@ -243,7 +248,7 @@ public class PlayerController : MonoBehaviour
                 v3_pushDirection = Vector3.zero;
         }
 
-        if (Input.GetKeyUp(KeyCode.Mouse1))
+        if (Input.GetKeyUp(KeyCode.Mouse0))
         {
             if (b_canPush)
             {
@@ -316,6 +321,11 @@ public class PlayerController : MonoBehaviour
         _rigidbody.MoveRotation(_rigidbody.rotation * deltaRotation);
     }
 
+    private void InstaRotate(float valor)
+    {
+        Quaternion deltaRotation = Quaternion.Euler(new Vector3(0, valor, 0));
+        _rigidbody.MoveRotation(_rigidbody.rotation * deltaRotation);
+    }
     private void CalculateVelocity()
     {
         if (b_accelerate) f_velocity += f_acceleration;
@@ -379,12 +389,12 @@ public class PlayerController : MonoBehaviour
     public void CanPushABox(bool valor, Rigidbody box = null)
     {
         b_canPush = valor;
-        _PushObject = box;
-        GameController.ChangeTip("Use o botão esquerdo do mouse para agarrar");
+        _pushObject = box;
+        GameController.ChangeBlueTip("Grap");
         if (!b_canPush)
         {
             StopPush();
-            GameController.HideTip();
+            GameController.HideBlueTip();
         }
     }
 
@@ -400,12 +410,12 @@ public class PlayerController : MonoBehaviour
     {
         ChangeState(State.Normal);
         _animator.SetBool("Crouch", false);
-        _PushObject = null;
+        _pushObject = null;
     }
 
     private void CorrectRotationToPush()
     {
-        transform.LookAt(_PushObject.transform);
+        transform.LookAt(_pushObject.transform);
 
         float x = _rigidbody.rotation.x > 45? 90:0;
         float z = _rigidbody.rotation.z > 45 ? 90 : 0;
@@ -415,7 +425,9 @@ public class PlayerController : MonoBehaviour
     private void PushMoviment()
     {
         _rigidbody.MovePosition(transform.position + v3_pushDirection * Time.deltaTime);
-        _PushObject.MovePosition(_PushObject.position + v3_pushDirection * Time.deltaTime);
+
+        if(_pushObject != null)
+            _pushObject.MovePosition(_pushObject.position + v3_pushDirection * Time.deltaTime);
     }
 
     private void AnimatePushMovimente()

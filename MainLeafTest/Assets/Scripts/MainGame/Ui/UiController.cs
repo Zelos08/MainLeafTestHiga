@@ -6,6 +6,7 @@ using UnityEngine;
 public class UiController : MonoBehaviour
 {
     public Text t_tip;
+    public Text t_blueTip;
     public Text t_coinCounter;
     public GameObject _pauseMenu;
     public GameObject _capturedMenu;
@@ -24,6 +25,17 @@ public class UiController : MonoBehaviour
     public void HideTip()
     {
         t_tip.enabled = false;
+    }
+
+    public void ChangeAndShowBlueTip(string s_tipText)
+    {
+        t_blueTip.enabled = true;
+        t_blueTip.text = s_tipText;
+    }
+
+    public void HideBlueTip()
+    {
+        t_blueTip.enabled = false;
     }
 
     public void CallPauseMenu(bool b_valor)
